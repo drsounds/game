@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Game/Scenes/SceneManager.gd" type="Script" id=1]
+[ext_resource path="res://Game/Scenes/Viewport.gd" type="Script" id=2]
+
+[node name="Viewport" type="Viewport"]
+size = Vector2( 160, 144 )
+handle_input_locally = false
+render_target_update_mode = 3
+script = ExtResource( 2 )
+
+[node name="SceneManager" type="Node2D" parent="."]
+script = ExtResource( 1 )
