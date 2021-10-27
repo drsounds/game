@@ -14,7 +14,7 @@ var is_suspended = false
 
 export(float) var z setget set_z, get_z
 export(float) var z_velocity setget set_z_velocity, get_z_velocity 
-export(float) var z_gravity = 0.1
+export(float) var z_gravity = 0.2
 export(float) var x_velocity = 0
 export(float) var y_velocity = 0
 export (bool) var current setget set_is_current, get_is_current
@@ -44,8 +44,8 @@ var start_scroll_x = 0
 var end_scroll_x = 0
 var start_scroll_y = 0
 var end_scroll_y = 0
-var scroll_x_velocity = 1
-var scroll_y_velocity = 1
+var scroll_x_velocity = 2
+var scroll_y_velocity = 2
 
 var scroll_x = 0
 var scroll_y = 0
@@ -284,7 +284,7 @@ func _physics_process(delta):
 					if tile_name == "tileset.png 2":
 						if self.x_velocity > 0:
 							jump()
-							jump_over(1, 0, 1, 0)
+							jump_over(0.5, 0, .5, 0)
 					
 					"""
 					var tile_pos = collider.world_to_map(position)		
@@ -351,13 +351,13 @@ func _process(delta):
 			if item_b:
 				item_b.use()
 		if Input.is_action_pressed('ui_up'):
-			y_velocity = -0.5
+			y_velocity = -0.3
 		if Input.is_action_pressed('ui_down'):
-			y_velocity = 0.5
+			y_velocity = 0.3
 		if Input.is_action_pressed('ui_left'):
-			x_velocity = -0.5
+			x_velocity = -0.3
 		if Input.is_action_pressed('ui_right'):
-			x_velocity = 0.5
+			x_velocity = 0.3
 		if Input.is_action_pressed('jump'):
 			jump()
 		if Input.is_action_just_released("ui_up"):
