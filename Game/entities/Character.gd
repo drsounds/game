@@ -184,6 +184,30 @@ func _on_body_entered(body):
 
 func get_z():
 	return _z
+
+func jump_down(s, collider):
+	var tile_y = 0
+	var found_bottom = false
+	var position_2 = position
+	while not found_bottom:
+		position_2.y += 16
+		var tile_pos2 = collider.world_to_map(position_2)
+		# Find the colliding tile position
+		 
+		var tile2_id = collider.get_cellv(tile_pos2)
+		var shapes = collider.tile_set.tile_get_shapes(tile2_id)
+		var found_collision = false
+		for shape in shapes:
+			var shape2 = shape["shape"]
+			print(shape2.get_class())
+			if shape2.is_class('ConvexPolygonShape2D'):
+				found_collision = true
+				tile_y += 16
+		if not found_collision:
+			found_bottom = true 
+	z_velocity += tile_y
+	self.global_position.y += tile_y
+	
 	
 func set_z(value):
 	_z = value
@@ -285,7 +309,14 @@ func _physics_process(delta):
 						if self.x_velocity > 0:
 							jump()
 							jump_over(0.5, 0, .5, 0)
-					
+					if tile_name == "tileset.png 2":
+						if self.x_velocity > 0:
+							jump()
+							jump_over(0.5, 0, .5, 0)
+					if tile_name == "tileset.png 5":
+						if self.y_velocity > 0:
+							jump_down(self, collider)					
+						
 					"""
 					var tile_pos = collider.world_to_map(position)		
 					print(tile_pos)
