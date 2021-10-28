@@ -12,6 +12,8 @@ var jumping_over = null
 
 var is_suspended = false
 
+var _is_falling = false
+
 export(float) var z setget set_z, get_z
 export(float) var z_velocity setget set_z_velocity, get_z_velocity 
 export(float) var z_gravity = 0.2
@@ -53,6 +55,12 @@ var scroll_y = 0
 var is_scrolling_x = false
 var is_scrolling_y = false
 
+var fall_shrink = 10
+
+
+func set_is_falling(value):
+	self._is_falling = value
+	
 
 func scroll_scene_x(x):
 	start_scroll_x = x
@@ -217,6 +225,12 @@ func set_z(value):
 func get_z_velocity():
 	return _z_velocity
 	
+func respawn():
+	var spawn_location = self.get_parent().get_node("Spawn_Start")
+	
+	self.global_position.x = spawn_location.global_position.x
+	self.global_position.y = spawn_location.global_position.y
+	
 func set_z_velocity(value):
 	_z_velocity = value
 
@@ -265,14 +279,28 @@ func _physics_process(delta):
 		# Get the tile id 
 		var tile_id = tile_map.get_cellv(tile_pos)
 		var tile_name = tile_map.tile_set.tile_get_name(tile_id)
-		
-		if tile_name == "Aqua" and z <= 0:
-			set_is_bathing(true)
-		else:
-			set_is_bathing(false)
-		
-
+		if z > 0:
+			if tile_name == "Aqua":
+				set_is_bathing(true)
+			else:
+				set_is_bathing(false)
+				
+			if tile_name == "Pit":
+				set_is_falling(true)
+			
 	
+	if _is_falling:
+		fall_shrink -= 0.01
+		if fall_shrink >= 0 and $Node2D.scale.y >= 0:
+			$Node2D.scale.x -= float(fall_shrink) / 10000
+			$Node2D.scale.y -= float(fall_shrink) / 10000
+		else:
+			fall_shrink = 10
+			_is_falling = false
+			$Node2D.scale.x = 0.1
+			$Node2D.scale.y = 0.1
+			self.respawn()
+
 	if _z_velocity > -10:
 		_z_velocity -= z_gravity
 	if has_gear('flySuit') and get_gear('flySuit').is_suspended:
