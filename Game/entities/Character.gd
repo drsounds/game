@@ -20,7 +20,7 @@ export(float) var y_velocity = 0
 export (bool) var current setget set_is_current, get_is_current
 export (bool) var is_bathing setget set_is_bathing, get_is_bathing
 var _is_bathing = false
-
+var is_jumping_down = false
 var camera_pos_x = 0
 var camera_pos_y = 0
 
@@ -83,9 +83,9 @@ func set_is_current(value):
 
 func set_is_bathing(value):
 	self._is_bathing = value 
-	$CharacterSprite.visible = !_is_bathing
-	$Gear.visible = is_bathing
-	$BathingSprite.visible = _is_bathing
+	$Node2D/CharacterBody.visible = !_is_bathing
+	#$Gear.visible = is_bathing
+	$Node2D/BathingSprite.visible = _is_bathing
 	
 func get_is_bathing():
 	return self._is_bathing
@@ -186,6 +186,8 @@ func get_z():
 	return _z
 
 func jump_down(s, collider):
+	if is_jumping_down:
+		return
 	var tile_y = 0
 	var found_bottom = false
 	var position_2 = position
@@ -199,14 +201,14 @@ func jump_down(s, collider):
 		var found_collision = false
 		for shape in shapes:
 			var shape2 = shape["shape"]
-			print(shape2.get_class())
 			if shape2.is_class('ConvexPolygonShape2D'):
 				found_collision = true
 				tile_y += 16
 		if not found_collision:
 			found_bottom = true 
-	z_velocity += tile_y
-	self.global_position.y += tile_y
+	z += tile_y * 10
+	self.global_position.y += tile_y - 16
+	is_jumping_down = true
 	
 	
 func set_z(value):
@@ -235,7 +237,7 @@ func _physics_process(delta):
 			is_scrolling_x = false
 			x_velocity = 0
 		return
-	if is_scrolling_y:
+	elif is_scrolling_y:
 		if abs(abs(start_scroll_y) - abs(end_scroll_y)) > 0:
 			if start_scroll_y > end_scroll_y:
 				start_scroll_y -= scroll_y_velocity
@@ -249,8 +251,28 @@ func _physics_process(delta):
 			is_scrolling_y = false
 			y_velocity = 0
 		return
-			
-			
+	else:
+		scroll_x = self.global_position.x - fmod(self.global_position.x, self.get_viewport().get_size().x) 
+		scroll_y = self.global_position.y - fmod(self.global_position.y, self.get_viewport().get_size().y)
+		
+	$GameController.position.x = -self.position.x + camera_pos_x + get_viewport().get_size().x / 2 + scroll_x
+	$GameController.position.y = -self.position.y + camera_pos_y + get_viewport().get_size().y / 2 + scroll_y
+	
+	var tile_map = self.get_parent().get_node("TileMap")
+	if tile_map:
+		var tile_pos = tile_map.world_to_map(position)
+		# Find the colliding tile position 
+		# Get the tile id 
+		var tile_id = tile_map.get_cellv(tile_pos)
+		var tile_name = tile_map.tile_set.tile_get_name(tile_id)
+		
+		if tile_name == "Aqua" and z <= 0:
+			set_is_bathing(true)
+		else:
+			set_is_bathing(false)
+		
+
+	
 	if _z_velocity > -10:
 		_z_velocity -= z_gravity
 	if has_gear('flySuit') and get_gear('flySuit').is_suspended:
@@ -265,6 +287,7 @@ func _physics_process(delta):
 		z = 0
 		z_velocity = 0 
 		jumping_over = null
+		is_jumping_down = false
 	
 	if has_gear('flySuit'):
 		if _z_velocity > 0:
@@ -289,14 +312,12 @@ func _physics_process(delta):
 		for i in get_slide_count():
 			var collision = get_slide_collision(i)
 			if collision and collision.collider:
-				print("I collided with ", collision.collider.name)
 				var collider = collision.collider
 				self.current_collider = collider
 				if collider.get_name().find('Wormhole') == 0:
 					var packed_scene = load('res://Game/Scenes/' + collider.scene + '/' + collider.scene + '.tscn')
 					var scene = packed_scene.instance()
 					self.teleport(scene, collider.spawn_point)
-				print(collider)
 				if collider is TileMap:
 					var tile_pos = collision.collider.world_to_map(position)
 					# Find the colliding tile position
@@ -304,18 +325,21 @@ func _physics_process(delta):
 					# Get the tile id 
 					var tile_id = collider.get_cellv(tile_pos)
 					var tile_name =collider.tile_set.tile_get_name(tile_id)
-					print(tile_name)
 					if tile_name == "tileset.png 2":
 						if self.x_velocity > 0:
 							jump()
 							jump_over(0.5, 0, .5, 0)
-					if tile_name == "tileset.png 2":
-						if self.x_velocity > 0:
+					if tile_name == "tileset.png 3":
+						if self.x_velocity < 0:
 							jump()
-							jump_over(0.5, 0, .5, 0)
+							jump_over(-0.5, 0, .5, 0)
 					if tile_name == "tileset.png 5":
 						if self.y_velocity > 0:
-							jump_down(self, collider)					
+							jump_down(self, collider)		
+					if tile_name == "tileset.png 9":
+						if self.y_velocity < 0:
+							jump()
+							jump_over(0, -0.5, 0, -0.5)					
 						
 					"""
 					var tile_pos = collider.world_to_map(position)		
@@ -357,7 +381,7 @@ func _physics_process(delta):
 
 func jump_over(x_velocity, y_velocity, x_end, y_end):
 	jumping_over = Rect2(x_velocity, y_velocity, x_end, y_end)
-
+	z_velocity = 12
 
 func _process(delta):
 	y_velocity = 0
@@ -415,6 +439,8 @@ func jump():
 	if has_gear('flySuit'):
 		max_z = 90
 
+	if not has_gear("flySuit") and z > 0:
+		return 
 		
 			
 	if has_gear('flySuit') and get_gear('flySuit').is_suspended:
@@ -423,7 +449,7 @@ func jump():
 		if z < max_z:
 			if has_gear('flySuit'):
 				get_gear('flySuit').get_node('Sprite').playing = true
-			_z_velocity = 2
+			_z_velocity = 6
 		else:
 			_z_velocity = 0
 
