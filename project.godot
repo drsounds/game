@@ -9,10 +9,20 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node2D",
+"base": "Gear",
 "class": "FlySuit",
 "language": "GDScript",
-"path": "res://Game/Items/FlySuit/FlySuit.gd"
+"path": "res://Game/Gears/FlySuit/FlySuit.gd"
+}, {
+"base": "Node2D",
+"class": "Gear",
+"language": "GDScript",
+"path": "res://Game/Gears/Gear.gd"
+}, {
+"base": "Node2D",
+"class": "Item",
+"language": "GDScript",
+"path": "res://Game/Items/Item.gd"
 }, {
 "base": "Node",
 "class": "SceneManager",
@@ -21,6 +31,8 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "FlySuit": "",
+"Gear": "",
+"Item": "",
 "SceneManager": ""
 }
 

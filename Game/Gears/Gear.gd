@@ -1,19 +1,18 @@
 extends Node2D
-class_name FlySuit
+class_name Gear
+
 
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
 
-export (bool) var is_suspended = false
+
 # Called when the node enters the scene tree for the first time.
-
-func get_type():
-	return 'flySuit'
-
 func _ready():
 	pass # Replace with function body.
 
+func get_type():
+	return "gear"
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):

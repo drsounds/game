@@ -42,6 +42,8 @@ var current_collider
 
 var items = {}
 
+var gears = {}
+
 var start_scroll_x = 0
 var end_scroll_x = 0
 var start_scroll_y = 0
@@ -105,6 +107,12 @@ func load_item(id):
 		items[id] = item_node
 	return items[id]
 
+func load_gear(id):
+	if not gears.has(id):
+		var gear_scene = load('res://Game/Gears/' + id + '/' + id + '.tscn')
+		var gear_node = gear_scene.instance()
+		gears[id] = gear_node
+	return gears[id]
 func assign_gear(item):
 	$Node2D/CharacterBody/Gear.add_child(item)
 	
@@ -189,9 +197,17 @@ func _on_body_entered(body):
 		var packed_scene = body.scene
 		var scene = packed_scene.instance()
 		self.teleport(packed_scene, body.spawn_point)
+		if body is Item:
+			body.get_parent().remove_child(body)
+			items[body.get_type()] = body
+		if body is Gear:
+			gears[body.get_type()] = body.get_type()
+			assign_gear(body)
 
 func get_z():
 	return _z
+
+
 
 func jump_down(s, collider):
 	if is_jumping_down:
@@ -279,7 +295,7 @@ func _physics_process(delta):
 		# Get the tile id 
 		var tile_id = tile_map.get_cellv(tile_pos)
 		var tile_name = tile_map.tile_set.tile_get_name(tile_id)
-		if z > 0:
+		if not z > 0:
 			if tile_name == "Aqua":
 				set_is_bathing(true)
 			else:
@@ -300,6 +316,7 @@ func _physics_process(delta):
 			$Node2D.scale.x = 0.1
 			$Node2D.scale.y = 0.1
 			self.respawn()
+		return
 
 	if _z_velocity > -10:
 		_z_velocity -= z_gravity
@@ -346,6 +363,8 @@ func _physics_process(delta):
 					var packed_scene = load('res://Game/Scenes/' + collider.scene + '/' + collider.scene + '.tscn')
 					var scene = packed_scene.instance()
 					self.teleport(scene, collider.spawn_point)
+				
+						
 				if collider is TileMap:
 					var tile_pos = collision.collider.world_to_map(position)
 					# Find the colliding tile position
@@ -457,8 +476,8 @@ func _ready():
 	if self.use_script:
 		self.use_script_node = use_script.new()
 		self.use_script_node.init(self)
-	var fly_suit = load_item('flySuit')
-	assign_gear(fly_suit)
+#	var fly_suit = load_item('flySuit')
+	#assign_gear(fly_suit)
 	
 	self.connect("body_entered", self, "_on_body_entered")
 
