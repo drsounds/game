@@ -8,7 +8,7 @@ extends Viewport
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	$SceneManager.teleport('OverworldEx', 'Start')
+	$SceneManager.teleport('Bungalow', 'Start')
 	pass # Replace with function body.
 
 

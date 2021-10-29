@@ -1,16 +1,15 @@
-extends Node
+extends Node2D 
 
+export (String) var scene_name
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+export (String) var location_name
 
+var opacity
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+	connect("body_entered", self, "_on_body_entered")
+	
+func _on_body_entered(body):
+	if body is KinematicBody:
+		self.get_parent().teleport(scene_name, location_name)
+		
