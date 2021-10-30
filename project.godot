@@ -28,12 +28,18 @@ _global_script_classes=[ {
 "class": "SceneManager",
 "language": "GDScript",
 "path": "res://Game/Scenes/SceneManager.gd"
+}, {
+"base": "StaticBody2D",
+"class": "Wormhole",
+"language": "GDScript",
+"path": "res://Game/Nodes/Wormhole/Wormhole.gd"
 } ]
 _global_script_class_icons={
 "FlySuit": "",
 "Gear": "",
 "Item": "",
-"SceneManager": ""
+"SceneManager": "",
+"Wormhole": ""
 }
 
 [application]

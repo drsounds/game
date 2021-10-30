@@ -193,7 +193,8 @@ func teleport(scene_node, spawn):
 
 
 func _on_body_entered(body):
-	if body.get_name().find('Wormhole') == 0:
+	
+	if body is Wormhole:
 		var packed_scene = body.scene
 		var scene = packed_scene.instance()
 		self.teleport(packed_scene, body.spawn_point)
@@ -360,7 +361,7 @@ func _physics_process(delta):
 				var collider = collision.collider
 				self.current_collider = collider
 				if collider.get_name().find('Wormhole') == 0:
-					var packed_scene = load('res://Game/Scenes/' + collider.scene + '/' + collider.scene + '.tscn')
+					var packed_scene = load('res://Game/Scenes/' + collider.scene_name + '/' + collider.scene_name + '.tscn')
 					var scene = packed_scene.instance()
 					self.teleport(scene, collider.spawn_point)
 				

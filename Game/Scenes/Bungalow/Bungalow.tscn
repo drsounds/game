@@ -14,7 +14,7 @@ tile_data = PoolIntArray( 0, 4, 0, 1, 5, 0, 2, 5, 0, 3, 5, 0, 4, 5, 0, 5, 5, 0, 
 [node name="Wormhole" parent="." instance=ExtResource( 2 )]
 position = Vector2( 79.8829, 138.072 )
 scene_name = "Overworld"
-location_name = "Bungalow"
+spawn_point = "Bungalow"
 
-[node name="Start" type="Node2D" parent="."]
+[node name="Spawn_Start" type="Node2D" parent="."]
 position = Vector2( 75.068, 59.281 )
