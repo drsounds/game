@@ -12,7 +12,12 @@ var jumping_over = null
 
 var is_suspended = false
 
+
 var _is_falling = false
+
+
+var sequenced_camera = false
+
 
 export(float) var z setget set_z, get_z
 export(float) var z_velocity setget set_z_velocity, get_z_velocity 
@@ -197,7 +202,7 @@ func _on_body_entered(body):
 	if body is Wormhole:
 		var packed_scene = body.scene
 		var scene = packed_scene.instance()
-		self.teleport(packed_scene, body.spawn_point)
+		self.get_parent().teleport(packed_scene, body.spawn_point)
 		if body is Item:
 			body.get_parent().remove_child(body)
 			items[body.get_type()] = body
@@ -252,8 +257,9 @@ func set_z_velocity(value):
 	_z_velocity = value
 
 func _physics_process(delta):
-	$GameController.position.x = -self.position.x + camera_pos_x + get_viewport().get_size().x / 2 + scroll_x
-	$GameController.position.y = -self.position.y + camera_pos_y + get_viewport().get_size().y / 2 + scroll_y
+	if sequenced_camera:
+		$GameController.position.x = -self.position.x + camera_pos_x + get_viewport().get_size().x / 2 + scroll_x
+		$GameController.position.y = -self.position.y + camera_pos_y + get_viewport().get_size().y / 2 + scroll_y
 	if is_scrolling_x:
 		if abs(abs(start_scroll_x) - abs(end_scroll_x)) > 0:
 			if start_scroll_x > end_scroll_x:
@@ -285,9 +291,9 @@ func _physics_process(delta):
 	else:
 		scroll_x = self.global_position.x - fmod(self.global_position.x, self.get_viewport().get_size().x) 
 		scroll_y = self.global_position.y - fmod(self.global_position.y, self.get_viewport().get_size().y)
-		
-	$GameController.position.x = -self.position.x + camera_pos_x + get_viewport().get_size().x / 2 + scroll_x
-	$GameController.position.y = -self.position.y + camera_pos_y + get_viewport().get_size().y / 2 + scroll_y
+	if sequenced_camera:
+		$GameController.position.x = -self.position.x + camera_pos_x + get_viewport().get_size().x / 2 + scroll_x
+		$GameController.position.y = -self.position.y + camera_pos_y + get_viewport().get_size().y / 2 + scroll_y
 	
 	var tile_map = self.get_parent().get_node("TileMap")
 	if tile_map:
@@ -361,9 +367,7 @@ func _physics_process(delta):
 				var collider = collision.collider
 				self.current_collider = collider
 				if collider.get_name().find('Wormhole') == 0:
-					var packed_scene = load('res://Game/Scenes/' + collider.scene_name + '/' + collider.scene_name + '.tscn')
-					var scene = packed_scene.instance()
-					self.teleport(scene, collider.spawn_point)
+					self.get_parent().get_parent().teleport(collider.scene_name, collider.spawn_point)
 				
 						
 				if collider is TileMap:
@@ -374,17 +378,17 @@ func _physics_process(delta):
 					var tile_id = collider.get_cellv(tile_pos)
 					var tile_name =collider.tile_set.tile_get_name(tile_id)
 					if tile_name == "tileset.png 2":
-						if self.x_velocity > 0:
+						if self.x_velocity > 0 or tile_name.ends_with('RightJump'):
 							jump()
 							jump_over(0.5, 0, .5, 0)
-					if tile_name == "tileset.png 3":
+					if tile_name == "tileset.png 3" or tile_name.ends_with('LeftJump'):
 						if self.x_velocity < 0:
 							jump()
 							jump_over(-0.5, 0, .5, 0)
-					if tile_name == "tileset.png 5":
+					if tile_name == "tileset.png 5" or tile_name.ends_with('DownJump'):
 						if self.y_velocity > 0:
 							jump_down(self, collider)		
-					if tile_name == "tileset.png 9":
+					if tile_name == "tileset.png 9" or tile_name.ends_with('UpJump'):
 						if self.y_velocity < 0:
 							jump()
 							jump_over(0, -0.5, 0, -0.5)					
@@ -417,15 +421,15 @@ func _physics_process(delta):
 							jump()
 							jump_over(0, 1, 0, 1)
 					"""
-	
-	if floor(fmod(self.position.x, get_viewport().get_size().x)) == 0 and x_velocity > 0:
-		scroll_scene_x(get_viewport().get_size().x)
-	if floor(fmod(self.position.y, get_viewport().get_size().y)) == 0 and y_velocity > 0:
-		scroll_scene_y(get_viewport().get_size().y)	
-	if floor(fmod(self.position.x, get_viewport().get_size().x)) == 0 and x_velocity < 0:
-		scroll_scene_x(-get_viewport().get_size().x)
-	if floor(fmod(self.position.y, get_viewport().get_size().y)) == 0 and y_velocity < 0:
-		scroll_scene_y(-get_viewport().get_size().y)	 
+	if sequenced_camera:
+		if floor(fmod(self.position.x, get_viewport().get_size().x)) == 0 and x_velocity > 0:
+			scroll_scene_x(get_viewport().get_size().x)
+		if floor(fmod(self.position.y, get_viewport().get_size().y)) == 0 and y_velocity > 0:
+			scroll_scene_y(get_viewport().get_size().y)	
+		if floor(fmod(self.position.x, get_viewport().get_size().x)) == 0 and x_velocity < 0:
+			scroll_scene_x(-get_viewport().get_size().x)
+		if floor(fmod(self.position.y, get_viewport().get_size().y)) == 0 and y_velocity < 0:
+			scroll_scene_y(-get_viewport().get_size().y)	 
 
 func jump_over(x_velocity, y_velocity, x_end, y_end):
 	jumping_over = Rect2(x_velocity, y_velocity, x_end, y_end)
