@@ -18,6 +18,12 @@ var _is_falling = false
 
 var sequenced_camera = false
 
+var activity_prefix = ""
+
+
+var is_walking_to = false
+
+var target = null
 
 export(float) var z setget set_z, get_z
 export(float) var z_velocity setget set_z_velocity, get_z_velocity 
@@ -47,6 +53,8 @@ var current_collider
 
 var items = {}
 
+var aStar
+
 var gears = {}
 
 var start_scroll_x = 0
@@ -61,6 +69,8 @@ var scroll_y = 0
 
 var is_scrolling_x = false
 var is_scrolling_y = false
+
+var tile_map
 
 var fall_shrink = 10
 
@@ -98,9 +108,12 @@ func set_is_current(value):
 
 func set_is_bathing(value):
 	self._is_bathing = value 
-	$Node2D/CharacterBody.visible = !_is_bathing
-	#$Gear.visible = is_bathing
-	$Node2D/BathingSprite.visible = _is_bathing
+	if self._is_bathing:
+		self.activity_prefix = " Bathing"
+	else:
+		self.activity_prefix = ""
+	
+	$Node2D/CharacterBody/AnimatedSprite.animation = $Node2D/CharacterBody/AnimatedSprite.animation.split(' ')[0] + self.activity_prefix
 	
 func get_is_bathing():
 	return self._is_bathing
@@ -126,6 +139,8 @@ func unassign_gear(item):
 
 
 func use(node):
+	if node.has_mehod('use'):
+		node.use(self)
 	if self.use_script_node:
 		self.use_script_node.run(node)
 
@@ -255,7 +270,18 @@ func respawn():
 	
 func set_z_velocity(value):
 	_z_velocity = value
+	
+func walk_to(node):
+	"""
+	Walk to node
+	"""
+	self.tile_map = self.get_parent().get_node("TileMap")
+	self.aStar = AStar2D.new()
+	var size = tile_map.get_used_rect().size
+	aStar.reserve_space(size.x * size.y)
+""" from https://escada-games.itch.io/randungeon/devlog/261991/how-to-use-godots-astar2d-for-path-finding"""
 
+func getAStarCellId(vCell:Vector2)->int:return int(vCell.y+vCell.x*tile_map.get_used_rect().size.y)
 func _physics_process(delta):
 	if sequenced_camera:
 		$GameController.position.x = -self.position.x + camera_pos_x + get_viewport().get_size().x / 2 + scroll_x
@@ -431,6 +457,47 @@ func _physics_process(delta):
 		if floor(fmod(self.position.y, get_viewport().get_size().y)) == 0 and y_velocity < 0:
 			scroll_scene_y(-get_viewport().get_size().y)	 
 
+"""
+func _input(event):
+	if get_is_current() and not locked:
+		if event.is_pressed():
+			if event.is_action('ui_s'):
+				if has_gear('flySuit'):	 
+					is_suspended = !is_suspended 
+			if event.is_action('ui_a'):
+				if current_collider and current_collider.has_method('use'):
+					current_collider.use(self)
+				elif item_a:
+					item_a.use()
+					
+			if event.is_action('ui_b'):
+				if item_b:
+					item_b.use()
+			if event.is_action('ui_up'):
+				turn_up()
+				y_velocity = -0.3
+			if event.is_action('ui_down'):
+				turn_down()
+				y_velocity = 0.3
+			if event.is_action('ui_left'):
+				turn_left()
+				x_velocity = -0.3
+			if event.is_action('ui_right'):
+				turn_right()
+				x_velocity = 0.3
+			if event.is_action('jump'):
+				jump()
+		else:
+			if event.is_action("ui_up"):
+				y_velocity -= y_velocity
+			if event.is_action('ui_down'):
+				y_velocity -= y_velocity
+			if event.is_action("ui_left"):
+				x_velocity -= x_velocity
+			if event.is_action('ui_right'):
+				x_velocity += x_velocity
+""" 
+
 func jump_over(x_velocity, y_velocity, x_end, y_end):
 	jumping_over = Rect2(x_velocity, y_velocity, x_end, y_end)
 	z_velocity = 12
@@ -448,7 +515,7 @@ func _process(delta):
 		if Input.is_action_just_pressed('ui_s'):
 			if has_gear('flySuit'):	 
 				is_suspended = !is_suspended 
-		if Input.is_action_pressed('ui_a'):
+		if Input.is_action_pressed('ui_accept'):
 			if current_collider and current_collider.has_method('use'):
 				current_collider.use(self)
 			elif item_a:
@@ -458,12 +525,16 @@ func _process(delta):
 			if item_b:
 				item_b.use()
 		if Input.is_action_pressed('ui_up'):
+			turn_up()
 			y_velocity = -0.3
 		if Input.is_action_pressed('ui_down'):
+			turn_down()
 			y_velocity = 0.3
 		if Input.is_action_pressed('ui_left'):
+			turn_left()
 			x_velocity = -0.3
 		if Input.is_action_pressed('ui_right'):
+			turn_right()
 			x_velocity = 0.3
 		if Input.is_action_pressed('jump'):
 			jump()
@@ -473,8 +544,22 @@ func _process(delta):
 			y_velocity -= y_velocity
 		if Input.is_action_just_released("ui_left"):
 			x_velocity -= x_velocity
-		if Input.is_action_just_released('ui_left'):
-			x_velocity -= x_velocity
+		if Input.is_action_just_released('ui_right'):
+			x_velocity += x_velocity
+
+	$Node2D/CharacterBody/AnimatedSprite.playing = x_velocity > 0 || y_velocity > 0
+	
+func turn_up():
+	$Node2D/CharacterBody/AnimatedSprite.animation = "Up" + self.activity_prefix
+	
+func turn_down():
+	$Node2D/CharacterBody/AnimatedSprite.animation = "Down" + self.activity_prefix
+
+func turn_left():
+	$Node2D/CharacterBody/AnimatedSprite.animation = "Left" + self.activity_prefix
+
+func turn_right():
+	$Node2D/CharacterBody/AnimatedSprite.animation = "Right" + self.activity_prefix
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -487,6 +572,8 @@ func _ready():
 	self.connect("body_entered", self, "_on_body_entered")
 
 func jump():
+	if self._is_bathing:
+		return
 	var max_z = 20
 	if has_gear('flySuit'):
 		max_z = 90

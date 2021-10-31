@@ -1,0 +1,36 @@
+{
+    "actors": {
+        "Maria": {
+            "as": "Character"
+        },
+        "B": {
+            "as": "Character"
+        }
+    },
+    "events": [
+        [
+            {
+                "actions": [
+                    {
+                        "action": "Add",
+                        "actor": "Maria",
+                        "position": "Entry"
+                    },
+                    {
+                        "action": "goto",
+                        "actor": "Maria",
+                        "entity": "B"
+                    }
+                ]
+            },
+            {
+                "actions": [
+                    {
+                        "action": "Conversation",
+                        "actor": "Maria"
+                    } 
+                ]
+            }
+        ]
+    ]
+}

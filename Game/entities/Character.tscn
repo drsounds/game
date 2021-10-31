@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://Game/entities/Character.gd" type="Script" id=1]
 [ext_resource path="res://Game/Fonts/Montserrat-Regular.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://Game/Tilesets/Character.png" type="Texture" id=3]
 
 [sub_resource type="DynamicFontData" id=1]
 
@@ -14,6 +15,113 @@ size = 11
 font_data = ExtResource( 2 )
 
 [sub_resource type="RectangleShape2D" id=4]
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 48, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 48, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 64, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=14]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 64, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 80, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=16]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 80, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 96, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=18]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 96, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=19]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 112, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=20]
+atlas = ExtResource( 3 )
+region = Rect2( 16, 112, 16, 16 )
+
+[sub_resource type="SpriteFrames" id=21]
+animations = [ {
+"frames": [ SubResource( 5 ), SubResource( 6 ) ],
+"loop": true,
+"name": "Up",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 7 ), SubResource( 8 ) ],
+"loop": true,
+"name": "Left",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 9 ), SubResource( 10 ) ],
+"loop": true,
+"name": "Right",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 11 ), SubResource( 12 ) ],
+"loop": true,
+"name": "Down",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 13 ), SubResource( 14 ) ],
+"loop": true,
+"name": "Down Bathing",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 15 ), SubResource( 16 ) ],
+"loop": true,
+"name": "Up Bathing",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 17 ), SubResource( 18 ) ],
+"loop": true,
+"name": "Right Bathing",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 19 ), SubResource( 20 ) ],
+"loop": true,
+"name": "Left Bathing",
+"speed": 5.0
+} ]
 
 [node name="Character" type="KinematicBody2D"]
 script = ExtResource( 1 )
@@ -42,14 +150,14 @@ position = Vector2( 23.6235, 12.1267 )
 position = Vector2( 60.0037, 12.2842 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0.594975, -0.353413 )
+position = Vector2( 0.0937314, -0.0698432 )
 shape = SubResource( 4 )
 
 [node name="Node2D" type="Node2D" parent="."]
 scale = Vector2( 0.1, 0.1 )
 
 [node name="Polygon2D" type="Polygon2D" parent="Node2D"]
-position = Vector2( 2.68835, 23.5811 )
+position = Vector2( 10.6569, 46.1587 )
 color = Color( 0, 0, 0, 0.105882 )
 polygon = PoolVector2Array( -8.78406, 27.3623, -30.1656, 29.1441, -39.9655, 34.4895, -40.8564, 42.5076, -15.0204, 46.9621, 14.3793, 46.9621, 30.4155, 38.0531, 31.3064, 30.9259, 18.8338, 25.5805, 5.47031, 24.6896 )
 
@@ -72,12 +180,6 @@ position = Vector2( 0.594975, -0.353413 )
 color = Color( 1, 1, 1, 0.239216 )
 polygon = PoolVector2Array( -7.09497, -7.58409, -7.65747, -5.95909, -6.78247, -3.83409, -5.78247, -1.33409, -2.84497, -0.0215869, -1.21997, 0.728413, 3.03003, 0.228413, 5.65503, -0.834087, 6.21753, -2.64659, 7.71753, -4.58409, 8.53003, -6.52159, 6.96753, -8.27159, 5.28003, -9.77159, 2.96753, -9.64659, -0.219975, -10.1466, -2.65747, -9.95909, -4.71997, -9.83409, -6.90747, -9.14659 )
 
-[node name="Polygon2D23" type="Polygon2D" parent="Node2D/BathingSprite/CharacterBody/CharacterBody2"]
-position = Vector2( 0.556812, -1.92759 )
-scale = Vector2( 0.872587, 0.758621 )
-color = Color( 1, 1, 1, 0.239216 )
-polygon = PoolVector2Array( -7.09497, -7.58409, -7.65747, -5.95909, -6.78247, -3.83409, -5.78247, -1.33409, -2.84497, -0.0215869, -1.21997, 0.728413, 3.03003, 0.228413, 5.65503, -0.834087, 6.21753, -2.64659, 7.71753, -4.58409, 8.53003, -6.52159, 6.96753, -8.27159, 5.28003, -9.77159, 2.96753, -9.64659, -0.219975, -10.1466, -2.65747, -9.95909, -4.71997, -9.83409, -6.90747, -9.14659 )
-
 [node name="Polygon2D24" type="Polygon2D" parent="Node2D/BathingSprite/CharacterBody/CharacterBody2"]
 position = Vector2( 0.65637, -3.47305 )
 scale = Vector2( 0.787645, 0.649425 )
@@ -87,6 +189,12 @@ polygon = PoolVector2Array( -7.09497, -7.58409, -7.65747, -5.95909, -6.78247, -3
 [node name="Polygon2D25" type="Polygon2D" parent="Node2D/BathingSprite/CharacterBody/CharacterBody2"]
 position = Vector2( -0.0752758, -3.94764 )
 scale = Vector2( 0.602317, 0.528736 )
+color = Color( 1, 1, 1, 0.239216 )
+polygon = PoolVector2Array( -7.09497, -7.58409, -7.65747, -5.95909, -6.78247, -3.83409, -5.78247, -1.33409, -2.84497, -0.0215869, -1.21997, 0.728413, 3.03003, 0.228413, 5.65503, -0.834087, 6.21753, -2.64659, 7.71753, -4.58409, 8.53003, -6.52159, 6.96753, -8.27159, 5.28003, -9.77159, 2.96753, -9.64659, -0.219975, -10.1466, -2.65747, -9.95909, -4.71997, -9.83409, -6.90747, -9.14659 )
+
+[node name="Polygon2D23" type="Polygon2D" parent="Node2D/BathingSprite/CharacterBody/CharacterBody2"]
+position = Vector2( 0.556812, -1.92759 )
+scale = Vector2( 0.872587, 0.758621 )
 color = Color( 1, 1, 1, 0.239216 )
 polygon = PoolVector2Array( -7.09497, -7.58409, -7.65747, -5.95909, -6.78247, -3.83409, -5.78247, -1.33409, -2.84497, -0.0215869, -1.21997, 0.728413, 3.03003, 0.228413, 5.65503, -0.834087, 6.21753, -2.64659, 7.71753, -4.58409, 8.53003, -6.52159, 6.96753, -8.27159, 5.28003, -9.77159, 2.96753, -9.64659, -0.219975, -10.1466, -2.65747, -9.95909, -4.71997, -9.83409, -6.90747, -9.14659 )
 
@@ -225,69 +333,82 @@ scale = Vector2( 0.601626, 1 )
 color = Color( 0, 0, 0, 0.294118 )
 polygon = PoolVector2Array( 4.47205, -8.0907, 3.92977, -7.71528, 2.72007, -7.465, 2.09437, -7.08957, 2.05265, -6.38044, 3.05378, -6.21358, 4.09663, -6.21358, 4.88919, -6.46387, 5.51489, -6.17187, 7.18344, -6.67243, 5.93203, -8.00727, 5.30632, -8.0907 )
 
-[node name="CharacterBody" type="Node2D" parent="Node2D"]
+[node name="Node2D" type="Node2D" parent="Node2D"]
 
-[node name="CharacterBody2" type="Node2D" parent="Node2D/CharacterBody"]
+[node name="CharacterBodyOld" type="Node2D" parent="Node2D"]
+visible = false
+position = Vector2( -0.88541, 39.8429 )
+
+[node name="CharacterBody2" type="Node2D" parent="Node2D/CharacterBodyOld"]
 scale = Vector2( 10, 10 )
 
-[node name="Polygon2D4" type="Polygon2D" parent="Node2D/CharacterBody/CharacterBody2"]
+[node name="Polygon2D4" type="Polygon2D" parent="Node2D/CharacterBodyOld/CharacterBody2"]
 position = Vector2( 1.80057, -5.77503 )
 scale = Vector2( 1.01563, 1 )
 color = Color( 0.266667, 0.266667, 0.266667, 1 )
 offset = Vector2( 3.51887, 5.56457 )
 polygon = PoolVector2Array( -3.55394, -8.68642, -3.09794, -7.38857, -2.29117, -5.38918, -2.65257, -3.99521, -3.02779, -2.54795, -2.7121, -2.09195, -1.87025, -3.10918, -1.30902, -5.63472, -1.97342, -7.39881, -2.32625, -8.33565, -2.7121, -8.79165 )
 
-[node name="Polygon2D3" type="Polygon2D" parent="Node2D/CharacterBody/CharacterBody2"]
+[node name="Polygon2D3" type="Polygon2D" parent="Node2D/CharacterBodyOld/CharacterBody2"]
 position = Vector2( -3.50951, -5.56457 )
 color = Color( 0.266667, 0.266667, 0.266667, 1 )
 offset = Vector2( 3.51887, 5.56457 )
 polygon = PoolVector2Array( -2.2561, -8.61626, -3.65917, -7.24826, -4.04502, -5.14365, -2.53671, -1.81134, -2.18594, -1.98672, -1.87025, -3.10918, -2.7121, -4.86303, -2.60687, -6.89749, -2.11579, -7.63411 )
 
-[node name="Polygon2D2" type="Polygon2D" parent="Node2D/CharacterBody/CharacterBody2"]
+[node name="Polygon2D2" type="Polygon2D" parent="Node2D/CharacterBodyOld/CharacterBody2"]
 position = Vector2( 0.117029, 0.432721 )
 color = Color( 0.223529, 0.223529, 0.223529, 1 )
 polygon = PoolVector2Array( 1.74267, -5.45934, 2.02329, -6.16088, 2.54944, -7.38857, 2.56529, -8.08792, 2.37406, -8.89688, 1.88298, -9.63349, 0.655289, -9.66857, -0.326866, -9.38796, -2.71063, -9.58408, -2.47439, -8.32416, -2.22102, -7.45872, -1.51948, -5.91534, -1.20379, -4.44211, -1.90533, -3.60026, -0.888097, -3.31964, -0.387646, -2.812, 0.79353, -2.96949, 2.1636, -3.49503, 1.74267, -4.40703 )
 
-[node name="Polygon2D" type="Polygon2D" parent="Node2D/CharacterBody/CharacterBody2"]
+[node name="Polygon2D" type="Polygon2D" parent="Node2D/CharacterBodyOld/CharacterBody2"]
 position = Vector2( -0.0576963, -2.71281 )
 color = Color( 0.239216, 0.239216, 0.239216, 1 )
 polygon = PoolVector2Array( -1.42041, -0.894425, -1.02693, -1.32944, -1.14612, -1.8062, 0.535774, -1.79296, 1.84953, -1.57233, 2.14651, -0.879899, 2.3077, -0.20312, 2.34364, 0.352833, 2.34364, 0.575558, 2.29909, 0.8651, 2.31038, 1.46121, 2.14651, 1.71873, 1.88898, 2.304, 1.79534, 2.70199, 1.44417, 3.89596, 1.34933, 4.16459, 1.66386, 4.56189, 1.67172, 4.8875, 1.20297, 6.48125, 0.796717, 7.85625, 0.0467167, 8.04375, -0.0775433, 5.88589, -0.00731087, 1.43779, -0.0775433, 2.04648, -0.288243, 3.52138, -0.311654, 4.80899, -0.390783, 5.98125, -0.422033, 7.91875, -1.14078, 7.85625, -1.39078, 6.45, -1.86586, 4.56233, -1.5095, 3.71598, -1.85678, 3.00634, -1.82131, 2.17918, -1.86586, 1.39964, -1.84358, 0.709192, -1.82131, 0.107836, -1.59926, -0.435089 )
 
-[node name="Polygon2D5" type="Polygon2D" parent="Node2D/CharacterBody/CharacterBody2"]
+[node name="Polygon2D5" type="Polygon2D" parent="Node2D/CharacterBodyOld/CharacterBody2"]
 position = Vector2( -0.265991, 0.00702 )
 color = Color( 0.745098, 0.678431, 0.6, 1 )
 polygon = PoolVector2Array( -1.62471, -11.9836, -1.37917, -10.0895, -0.973212, -8.81952, -0.291789, -8.05503, 0.651788, -8.03827, 1.32175, -8.4058, 1.93304, -8.85077, 2.21429, -9.81952, 2.23375, -10.791, 2.43304, -11.5383, 2.08929, -12.7258, 1.53221, -13.4218, 0.55006, -13.492, -0.221635, -13.3517, -1.00446, -13.0383 )
 
-[node name="Polygon2D8" type="Polygon2D" parent="Node2D/CharacterBody/CharacterBody2"]
+[node name="Polygon2D8" type="Polygon2D" parent="Node2D/CharacterBodyOld/CharacterBody2"]
 position = Vector2( -0.124327, -0.256905 )
 scale = Vector2( 0.1, 0.1 )
 color = Color( 1, 1, 1, 0.176471 )
 polygon = PoolVector2Array( -12.3311, -36.1903, -12.7765, -28.6177, -16.7856, -22.6041, -16.5628, -16.3678, -17.231, -12.1361, -17.4537, -5.89977, -15.8947, 1.00469, -14.3356, 4.79101, -13.4447, 11.25, -14.3356, 15.9272, -15.4492, 19.4908, -14.3356, 24.3908, -12.3311, 39.7588, -11.2174, 46.2178, -9.65837, 45.1042, -9.8811, 32.8543, -10.9947, 26.618, -9.65837, 22.609, -9.43565, 18.3772, -9.21292, 11.4727, -9.65837, 2.34104, -6.09477, -17.036, -3.64481, -34.1858, -1.632, -43.7982, -9.06454, -41.4198 )
 
-[node name="Polygon2D7" type="Polygon2D" parent="Node2D/CharacterBody/CharacterBody2"]
+[node name="Polygon2D7" type="Polygon2D" parent="Node2D/CharacterBodyOld/CharacterBody2"]
 
-[node name="Polygon2D" type="Polygon2D" parent="Node2D/CharacterBody/CharacterBody2/Polygon2D7"]
+[node name="Polygon2D" type="Polygon2D" parent="Node2D/CharacterBodyOld/CharacterBody2/Polygon2D7"]
 position = Vector2( 1.48413, -0.25589 )
 color = Color( 1, 1, 1, 0.129412 )
 offset = Vector2( -1.88504, 0.233617 )
 polygon = PoolVector2Array( 0.259148, 4.79996, 0.303693, 4.06497, 0.593236, 3.04043, 0.593236, 1.32545, 0.593236, -0.278162, 0.771416, -1.10224, 0.771416, -1.54769, 1.01641, -2.72813, 1.30595, -3.79721, 1.88504, -3.59676, 1.66232, -2.77268, 1.88504, -1.61451, 1.55095, -0.43407, 1.01641, 0.679553, 1.03868, 1.97136, 1.06096, 3.08498, 0.570962, 4.33224, 0.325966, 4.97814 )
 
-[node name="Polygon2D2" type="Polygon2D" parent="Node2D/CharacterBody"]
+[node name="Polygon2D2" type="Polygon2D" parent="Node2D/CharacterBodyOld"]
 position = Vector2( 1.64223, 5.86101 )
 scale = Vector2( 10, 10 )
 color = Color( 0.266667, 0.266667, 0.266667, 1 )
 polygon = PoolVector2Array( -1.19221, -4.51729, -1.263, -4.98922, -0.826459, -5.1898, -0.0949561, -5.27239, 0.648345, -5.29598, 1.45064, -5.06001, 1.7338, -4.96563, 1.722, -4.63527, 1.29726, -4.64707, 0.896112, -4.70606, 0.447772, -4.71786, 0.0230281, -4.74146, -0.755668, -4.58808 )
 
-[node name="Polygon2D" type="Polygon2D" parent="Node2D/CharacterBody"]
+[node name="Polygon2D" type="Polygon2D" parent="Node2D/CharacterBodyOld"]
 position = Vector2( 89.9063, -55.8002 )
 color = Color( 1, 1, 1, 0.0941176 )
 polygon = PoolVector2Array( -99.1384, 11.2166, -93.0032, 9.8008, -88.4018, 9.44685, -81.5587, 9.0929, -75.6595, 10.2727, -71.648, 11.0986, -71.1761, 12.2785, -73.0638, 12.5144, -75.4235, 12.2785, -79.081, 12.0425, -84.5083, 11.3346, -88.9917, 11.4526, -93.0032, 12.1605, -98.3125, 12.9864, -99.8463, 13.3403, -100.2, 13.3403, -100.082, 11.9245 )
 
-[node name="Polygon2D3" type="Polygon2D" parent="Node2D/CharacterBody"]
+[node name="Polygon2D3" type="Polygon2D" parent="Node2D/CharacterBodyOld"]
 position = Vector2( 0.516297, 3.272 )
 color = Color( 0.329412, 0.176471, 0.176471, 1 )
 polygon = PoolVector2Array( -2.80038, -139.639, -6.36395, -138.748, -12.1548, -135.184, -17.0547, -131.175, -18.9695, -124.052, -12.6017, -122.553, -2.48813, -122.179, 3.5051, -127.798, 10.9966, -127.423, 16.2407, -126.299, 13.6812, -132.066, 16.3539, -129.839, 18.1357, -127.166, 15.9085, -135.63, 12.3449, -136.966, 7.44498, -139.193, 2.09958, -139.639 )
 
-[node name="Gear" type="Node2D" parent="Node2D/CharacterBody"]
+[node name="Items" type="Node2D" parent="Node2D/CharacterBodyOld"]
 
-[node name="Items" type="Node2D" parent="Node2D/CharacterBody"]
+[node name="CharacterBody" type="Node2D" parent="Node2D"]
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Node2D/CharacterBody"]
+position = Vector2( 0.0103645, -1.15307 )
+scale = Vector2( 11.3292, 11.3292 )
+frames = SubResource( 21 )
+animation = "Up Bathing"
+
+[node name="Gear" type="Node2D" parent="Node2D/CharacterBody"]
+position = Vector2( -0.88541, 39.8429 )
