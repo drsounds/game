@@ -52,6 +52,7 @@ func switch_scenes():
 		var PlayerScene = load('res://Game/entities/Character.tscn')
 		self.player = PlayerScene.instance()
 		self.player.locked = true
+		self.player.name = 'Player'
 
 	var Scene = load('res://Game/Scenes/' + scene_name + '/' + scene_name + '.tscn')
 	var scene = Scene.instance()
@@ -80,6 +81,9 @@ func _timein():
 func enter_scene():
 	self.player.locked = false
 	self.transitioning = false
+	if self.to_scene.has_method('player_ready'):
+		self.to_scene.call('player_ready')
+
 func _ready():
 	timer_in.connect("timeout", self, "_timein")
 	timer_out.connect("timeout", self, "_timeout")

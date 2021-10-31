@@ -2,15 +2,15 @@
 	"events": [
 		{
 			"character": "character-1635680913.json",
-			"event_id": "dialogic_010",
-			"options": [
-
-			],
+			"event_id": "dialogic_001",
 			"portrait": "",
-			"question": "We are in the process of rebuilding the Masanume"
+			"text": "The entropic pulse was not a coincidence\t"
 		},
 		{
-			"event_id": "dialogic_013"
+			"character": "character-1635700985.json",
+			"event_id": "dialogic_001",
+			"portrait": "",
+			"text": "I approve"
 		}
 	],
 	"metadata": {

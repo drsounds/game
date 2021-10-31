@@ -21,9 +21,12 @@ var sequenced_camera = false
 var activity_prefix = ""
 
 
-var is_walking_to = false
+var walking_to = null
 
 var target = null
+
+var walk_delta_x = 0
+var walk_delta_y = 0
 
 export(float) var z setget set_z, get_z
 export(float) var z_velocity setget set_z_velocity, get_z_velocity 
@@ -271,15 +274,13 @@ func respawn():
 func set_z_velocity(value):
 	_z_velocity = value
 	
-func walk_to(node):
+func walk_to(pos):
 	"""
 	Walk to node
 	"""
-	self.tile_map = self.get_parent().get_node("TileMap")
-	self.aStar = AStar2D.new()
-	var size = tile_map.get_used_rect().size
-	aStar.reserve_space(size.x * size.y)
-""" from https://escada-games.itch.io/randungeon/devlog/261991/how-to-use-godots-astar2d-for-path-finding"""
+	walking_to = pos
+		
+	""" from https://escada-games.itch.io/randungeon/devlog/261991/how-to-use-godots-astar2d-for-path-finding"""
 
 func getAStarCellId(vCell:Vector2)->int:return int(vCell.y+vCell.x*tile_map.get_used_rect().size.y)
 func _physics_process(delta):
@@ -323,11 +324,9 @@ func _physics_process(delta):
 	
 	var tile_map = self.get_parent().get_node("TileMap")
 	if tile_map:
-		var tile_pos = tile_map.world_to_map(position)
-		# Find the colliding tile position 
-		# Get the tile id 
-		var tile_id = tile_map.get_cellv(tile_pos)
+		var tile_id = get_tile_at_position(position)
 		var tile_name = tile_map.tile_set.tile_get_name(tile_id)
+	
 		if not z > 0:
 			if tile_name == "Aqua":
 				set_is_bathing(true)
@@ -402,7 +401,7 @@ func _physics_process(delta):
 					tile_pos -= collision.normal
 					# Get the tile id 
 					var tile_id = collider.get_cellv(tile_pos)
-					var tile_name =collider.tile_set.tile_get_name(tile_id)
+					var tile_name = collider.tile_set.tile_get_name(tile_id)
 					if tile_name == "tileset.png 2":
 						if self.x_velocity > 0 or tile_name.ends_with('RightJump'):
 							jump()
@@ -502,6 +501,15 @@ func jump_over(x_velocity, y_velocity, x_end, y_end):
 	jumping_over = Rect2(x_velocity, y_velocity, x_end, y_end)
 	z_velocity = 12
 
+func get_tile_at_position(pos):
+	var tile_map = self.get_parent().get_node("TileMap")
+	
+	var tile_pos = tile_map.world_to_map(pos)
+	# Find the colliding tile position 
+	# Get the tile id 
+	var tile_id = tile_map.get_cellv(tile_pos)
+	return tile_id
+
 func _process(delta):
 	y_velocity = 0
 	x_velocity = 0
@@ -511,6 +519,31 @@ func _process(delta):
 		item_a.process_item()
 	if item_b:
 		item_b.process_item()
+	if walking_to:	
+		var x_distance = walking_to.x - self.global_position.x 
+		var y_distance = walking_to.y - self.global_position.y
+		if x_distance != 0:
+			if walk_delta_x < 1 and walk_delta_y < 1: 
+				walk_down()
+			if walk_delta_x < 1:
+				walk_up()
+			if x_distance < 0:
+				walk_left()
+			if x_distance > 0:
+				walk_right()
+		if y_distance != 0:
+			if walk_delta_y < 1 and walk_delta_y < 1: 
+				walk_left()
+			if walk_delta_x < 1:
+				walk_right()
+			if y_distance < 0:	
+				walk_up()
+			if y_distance > 0:
+				walk_down()
+		if x_distance < 1 and y_distance < 1:
+			walking_to = null
+		walk_delta_x = self.global_position.x
+		walk_delta_y = self.global_position.y 
 	if get_is_current() and not locked:
 		if Input.is_action_just_pressed('ui_s'):
 			if has_gear('flySuit'):	 
@@ -525,17 +558,13 @@ func _process(delta):
 			if item_b:
 				item_b.use()
 		if Input.is_action_pressed('ui_up'):
-			turn_up()
-			y_velocity = -0.3
+			walk_up()
 		if Input.is_action_pressed('ui_down'):
-			turn_down()
-			y_velocity = 0.3
+			walk_down()
 		if Input.is_action_pressed('ui_left'):
-			turn_left()
-			x_velocity = -0.3
+			walk_left()
 		if Input.is_action_pressed('ui_right'):
-			turn_right()
-			x_velocity = 0.3
+			walk_right()
 		if Input.is_action_pressed('jump'):
 			jump()
 		if Input.is_action_just_released("ui_up"):
@@ -548,7 +577,24 @@ func _process(delta):
 			x_velocity += x_velocity
 
 	$Node2D/CharacterBody/AnimatedSprite.playing = x_velocity > 0 || y_velocity > 0
+
+
+func walk_left():
+	turn_left()
+	x_velocity = -0.3
 	
+func walk_right():
+	turn_right()
+	x_velocity = 0.3
+
+func walk_up():
+	turn_up()
+	y_velocity = -0.3
+
+func walk_down():
+	turn_down()
+	y_velocity = 0.3
+			
 func turn_up():
 	$Node2D/CharacterBody/AnimatedSprite.animation = "Up" + self.activity_prefix
 	
